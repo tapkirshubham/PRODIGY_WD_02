@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .stopwatch {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 1em;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .laps {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stopwatch</h1>
+    <div class="stopwatch" id="display">00:00:00</div>
+    <button onclick="start()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="lap()">Lap</button>
+    <ul class="laps" id="laps"></ul>
+
+    <script>
+        let timer;
+        let startTime;
+        let elapsedTime = 0;
+        let running = false;
+
+        function start() {
+            if (!running) {
+                startTime = Date.now() - elapsedTime;
+                timer = setInterval(updateDisplay, 100);
+                running = true;
+            }
+        }
+
+        function pause() {
+            if (running) {
+                clearInterval(timer);
+                elapsedTime = Date.now() - startTime;
+                running = false;
+            }
+        }
+
+        function reset() {
+            clearInterval(timer);
+            elapsedTime = 0;
+            running = false;
+            document.getElementById("display").textContent = "00:00:00";
+            document.getElementById("laps").innerHTML = "";
+        }
+
+        function lap() {
+            if (running) {
+                let lapTime = document.getElementById("display").textContent;
+                let li = document.createElement("li");
+                li.textContent = lapTime;
+                document.getElementById("laps").appendChild(li);
+            }
+        }
+
+        function updateDisplay() {
+            let now = Date.now() - startTime;
+            let hours = Math.floor(now / (1000 * 60 * 60));
+            let minutes = Math.floor((now % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((now % (1000 * 60)) / 1000);
+            document.getElementById("display").textContent =
+                (hours < 10 ? "0" : "") + hours + ":" +
+                (minutes < 10 ? "0" : "") + minutes + ":" +
+                (seconds < 10 ? "0" : "") + seconds;
+        }
+    </script>
+</body>
+</html>
